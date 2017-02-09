@@ -1,0 +1,64 @@
+## Statistical Inference- Part 1
+Kalpana Rupani
+
+## Overview
+This is part 1 of Coursera Statistical Inference course project. This  simulation exercise,investigates the distribution of averages of 40 exponentials with a thousand simulations and the exponential distribution in R and compares it with the Central Limit Theorem. This  simulation illustrates the following :
+
+1. the sample mean and the theoretical mean
+2. the sample variance and the theoretical variance
+3. the distribution
+
+
+## Simulation
+The exponential distribution is simulated in R with rexp(n, lambda) where lambda is the rate parameter. The mean of exponential distribution is 1/lambda and the standard deviation is also 1/lambda. Set lambda = 0.2 for all of the simulations.
+
+```{r}
+# set seed for reproducability
+set.seed(2016)
+
+# Set sampling values as described in the project instructions
+lambda <- 0.2   # lambda
+
+n <- 40         # number of exponentials
+
+simulations <- 1000    # number of simulations
+
+#Run simulations
+simulated_exponential <- replicate(simulations, rexp(n, lambda))
+
+#Calc the means of the exponential simulations
+means_exp <- apply(simulated_exponential, 2, mean)
+
+#Histogram of the means
+
+hist(means_exp, breaks=40, xlim = c(2,9), main="Exponential Function Simulation Means", col = "orange")
+
+
+```
+
+## Sample Mean vs. Theoretical Mean
+
+```{r}
+sample_mean <- mean(means_exp)
+cat("sample mean: ", sample_mean)
+theoretical_mean <- 1/lambda
+cat("theoretical mean: ", theoretical_mean)
+```
+## Sample Variance vs. Theoretical Variance
+```{r}
+sample_var <- var(means_exp)
+cat("sample variance: ", sample_var)
+theoretical_var <- (1/lambda)^2/n
+cat("theoretical variance: ", theoretical_var)
+```
+##Distribution
+Finally, we’ll investigate whether the exponential distribution is approximately normal. Due to the Central Limit Theorem, the means of the sample simulations should follow a normal distribution.
+
+```{r}
+hist(means_exp, prob=TRUE, col="grey", main="Exponential Function Simulation Means", breaks=40, xlim=c(2,9), xlab = "Simulation Means")
+lines(density(means_exp), lwd=3, col="green")
+
+x <- seq(min(means_exp), max(means_exp), length=2*n)
+y <- dnorm(x, mean=1/lambda, sd=sqrt(((1/lambda)/sqrt(n))^2))
+lines(x, y, pch=20, col="red", lwd=2, lty = 2)
+```
